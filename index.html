@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="pt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Abrir no Obsidian</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { font: 18px/1.5 system-ui, sans-serif; display: grid; place-items: center; min-height: 100vh; margin: 0; padding: 1rem; text-align: center; }
+  a.botao { display: inline-block; margin-top: 1rem; padding: .8rem 1.4rem; border-radius: .6rem; background: #7c3aed; color: #fff; text-decoration: none; font-weight: 600; }
+  small { display: block; margin-top: 1.5rem; opacity: .6; }
+</style>
+</head>
+<body>
+<main>
+  <p id="texto">A abrir a nota no Obsidian…</p>
+  <a id="botao" class="botao" hidden>Abrir no Obsidian</a>
+  <small>Esta página não guarda nada: o nome da nota vem no fragmento do endereço (depois do #), que nunca sai do teu dispositivo.</small>
+</main>
+<script>
+  // O endereço só pode levar a obsidian://open; nunca a outro sítio. #v=<vault>&f=<caminho da nota, sem .md>
+  const p = new URLSearchParams(location.hash.slice(1));
+  const vault = p.get("v"), nota = p.get("f");
+  const texto = document.getElementById("texto"), botao = document.getElementById("botao");
+  if (!vault || !nota) {
+    texto.textContent = "Falta indicar a nota (este endereço é gerado pelo Life OS).";
+  } else {
+    const destino = "obsidian://open?vault=" + encodeURIComponent(vault) + "&file=" + encodeURIComponent(nota);
+    botao.href = destino;
+    botao.hidden = false;
+    texto.textContent = "«" + nota.split("/").pop() + "»";
+    // Alguns navegadores só abrem aplicações com um toque; por isso o botão fica sempre visível.
+    setTimeout(() => { location.href = destino; }, 150);
+  }
+</script>
+</body>
+</html>
